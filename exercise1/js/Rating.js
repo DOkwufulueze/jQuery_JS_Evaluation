@@ -102,6 +102,7 @@ class Rating {
     $('div.column').removeClass('highlighted');
     if (row){
       target.addClass('highlighted');
+      $(`input#${row}${column}`).prop('checked', 'false');
       $(`input#${row}${column}`).attr('checked', 'checked');
     }
   }
