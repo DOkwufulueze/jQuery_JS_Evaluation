@@ -28,7 +28,8 @@ class Rating {
     this._ratings.forEach((rating, columnIndex) => {
       $firstRow.append($('<div />', {
         'html': rating,
-        'class': `column${columnIndex} content heading`,
+        'class': `column${columnIndex} content heading column`,
+        'id': `column${columnIndex}`,
       }));
     });
 
@@ -39,10 +40,11 @@ class Rating {
 
   _addProductsForRating() {
     this._products.forEach((product, rowIndex) => {
-      let $row = $('<div />', {'id': `row${rowIndex}`,});
+      let $row = $('<div />');
       $row.append($('<div />', {
         'html': product,
         'class': `row${rowIndex} content heading row`,
+        'id': `row${rowIndex}`,
       }));
 
       this._ratings.forEach((rating, columnIndex) => {
@@ -57,11 +59,11 @@ class Rating {
     const $column = $('<div />', { 'class': 'content', });
     const $radio = $('<input />', {
       'type': 'radio',
-      'id': `radio${rowIndex}${columnIndex}`,
+      'id': `row${rowIndex}column${columnIndex}`,
       'name': `radio${rowIndex}`,
       'class': `row${rowIndex}~column${columnIndex}`,
     });
-    
+
     row.append(
       $column.append($radio)
     );
@@ -74,6 +76,8 @@ class Rating {
         this._useRadio($target);
       } else if ($target.is('div.row')) {
         this._useProduct($target);
+      } else if ($target.is('div.column')) {
+        this._useRating($target);
       }
     });
   }
@@ -87,18 +91,33 @@ class Rating {
     const targetClass = target.siblings('div').find('input:checked').length ? target.siblings('div').find('input:checked').attr('class') : null;
     if (targetClass) {
       target.siblings('div').find('input:checked').length ? this._highlightProductAndRating(targetClass) : null;
+    } else {
+      this._deselectAllButThis(target);
     }
+  }
+
+  _useRating(target) {
+    const row = $('div.row.highlighted').attr('id');
+    const column = target.attr('id');
+    $('div.column').removeClass('highlighted');
+    target.addClass('highlighted');
+    $(`input#${row}${column}`).attr('checked', 'checked');
+  }
+
+  _deselectAllButThis(target) {
+    this._removeHighlightFromAll();
+    target.addClass('highlighted');
   }
 
   _highlightProductAndRating(targetClass) {
     const rowIndex = targetClass.substring(0, targetClass.indexOf('~'));
     const columnIndex = targetClass.substring(targetClass.indexOf('~')+1);
-    this._removeHighlightFromAll(targetClass);
+    this._removeHighlightFromAll();
     $(`.${rowIndex}`).addClass('highlighted');
     $(`.${columnIndex}`).addClass('highlighted');
   }
 
-  _removeHighlightFromAll(targetClass) {
+  _removeHighlightFromAll() {
     $('div').removeClass('highlighted');
   }
 }
