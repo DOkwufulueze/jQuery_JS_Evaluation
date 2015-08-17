@@ -100,8 +100,10 @@ class Rating {
     const row = $('div.row.highlighted').attr('id');
     const column = target.attr('id');
     $('div.column').removeClass('highlighted');
-    target.addClass('highlighted');
-    $(`input#${row}${column}`).attr('checked', 'checked');
+    if (row){
+      target.addClass('highlighted');
+      $(`input#${row}${column}`).attr('checked', 'checked');
+    }
   }
 
   _deselectAllButThis(target) {
