@@ -13,4 +13,3 @@
 // limitations under the License.
 
 new traceur.WebPageTranscoder(document.location.href).run();
-
