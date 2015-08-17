@@ -1,0 +1,40 @@
+div {
+	clear: both;
+}
+
+.hidden {
+	display: none;
+}
+
+.revealed {
+	display: block;
+}
+
+.content {
+	border-right: 1px solid #bababa;
+	min-width: 130px;
+	height: 50px;
+	text-align: center;
+	padding-top: 25px;
+	float: left;
+	clear: none;
+	margin: 0px;
+}
+
+.heading {
+	font-weight: bold;
+}
+
+div.last {
+	border-right: 0px;
+}
+
+.highlighted {
+	background: #bebeff;
+}
+
+.row {
+	cursor: pointer;
+}
+
+
