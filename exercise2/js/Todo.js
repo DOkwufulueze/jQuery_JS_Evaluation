@@ -187,22 +187,19 @@ class Todo {
   _expandAll(target) {
     target.closest('div.todoSection')
       .siblings('div')
-      .removeClass('hidden')
-      .addClass('revealed');
+      .slideDown(1000);
   }
 
   _collapseAll(target) {
     target.closest('div.todoSection')
       .siblings('div')
-      .removeClass('revealed')
-      .addClass('hidden');
+      .slideUp(1000);
   }
 
   _expand(target) {
     target.closest('div.roleHeader')
       .siblings('div')
-      .removeClass('hidden')
-      .addClass('revealed');
+      .slideDown(1000);
 
     target
       .removeClass('expand')
@@ -213,8 +210,7 @@ class Todo {
   _collapse(target) {
     target.closest('div.roleHeader')
       .siblings('div')
-      .removeClass('revealed')
-      .addClass('hidden');
+      .slideUp(1000);
 
     target
       .removeClass('collapse')
@@ -269,12 +265,19 @@ class Todo {
     this._$employeeRoleDropDown.one('change', () => {
       const employee = this._$employeeRoleDropDown.children('option').filter(':selected').text();
       const employeeClass = this._$employeeRoleDropDown.val();
-      const $employeeDiv = this._createNewElement('div', `${className} ${employeeClass}`, employee);
+      this._checkForExistenceAndContinue(target, className, role, employeeClass, employee);
+    });
+  }
 
+  _checkForExistenceAndContinue(target, className, role, employeeClass, employee) {
+    if (!target.siblings('div').find(`div.${employeeClass}`).length) {
+      const $employeeDiv = this._createNewElement('div', `${className} ${employeeClass}`, employee);
       this._appendImagesAndSetToggling(target, $employeeDiv);
       this._initializeToDo(className, role, employeeClass, employee);
       this._$employeeRoleDropDown.removeClass('revealed').addClass('hidden');
-    });
+    } else {
+      alert(':::Employee/Role combination already exists.');
+    }
   }
 
   _appendImagesAndSetToggling(target, employeeDiv) {
