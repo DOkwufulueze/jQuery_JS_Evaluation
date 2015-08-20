@@ -187,13 +187,33 @@ class Todo {
   _expandAll(target) {
     target.closest('div.todoSection')
       .siblings('div')
+      .find('.roleHeader')
+      .siblings('div')
       .slideDown(1000);
+
+    target.closest('div.todoSection')
+      .siblings('div')
+      .find('.roleHeader')
+      .find('.expand')
+      .removeClass('expand')
+      .addClass('collapse')
+      .attr('src', 'images/collapse.jpg');
   }
 
   _collapseAll(target) {
     target.closest('div.todoSection')
       .siblings('div')
+      .find('.roleHeader')
+      .siblings('div')
       .slideUp(1000);
+
+    target.closest('div.todoSection')
+      .siblings('div')
+      .find('.roleHeader')
+      .find('.collapse')
+      .removeClass('collapse')
+      .addClass('expand')
+      .attr('src', 'images/add.jpg');
   }
 
   _expand(target) {
@@ -218,10 +238,6 @@ class Todo {
       .attr('src', 'images/add.jpg');
   }
 
-  _toggleDeleteImage(target) {
-    target.find('img').toggleClass('revealed');
-  }
-
   _deleteRole(target) {
     if (confirm(':::Are you sure you want to delete role?')) {
       const className = target.parent('div').attr('id');
@@ -243,6 +259,7 @@ class Todo {
       const className = target.closest('div').parent('div').parent('div').attr('id');
       const employee = target.closest('div').attr('class').split(/\s+/)[1];
       $(`.${className}.${employee}`).remove();
+      $('.roleDelete').removeClass('revealed').addClass('hidden');
     }
   }
 
@@ -277,6 +294,7 @@ class Todo {
       this._$employeeRoleDropDown.removeClass('revealed').addClass('hidden');
     } else {
       alert(':::Employee/Role combination already exists.');
+      this._addNewEmployeeToRole(target);
     }
   }
 
