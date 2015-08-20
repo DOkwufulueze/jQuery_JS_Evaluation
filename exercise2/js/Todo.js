@@ -22,29 +22,15 @@ class Todo {
 
   _left() {
     return this._$left
-      .append(
-        this._$roles.append($('<div />', {
-          'class': 'heading borderedBelow',
-          'html': 'ROLES',
-        }))
-      )
-      .append(
-        this._$employees.append($('<div />', {
-          'class': 'heading borderedBelow',
-          'html': 'Employees',
-        })
-        )
-      );
+      .append(this._$roles.append(this._createNewElement('div', 'heading borderedBelow', 'ROLES')))
+      .append(this._$employees.append(this._createNewElement('div', 'heading borderedBelow', 'Employees')));
   }
 
   _right() {
     return this._$right.append(
-      $('<div />', { 'class': 'todoSection', })
-        .append($('<div />', {
-          'class': 'todoHeading heading', 
-          'html': 'ToDos',
-        }))
-        .append($('<div />', { 'class': 'expandCollapse', })
+      this._divWithJustClass('todoSection')
+        .append(this._createNewElement('div', 'todoHeading heading', 'ToDos'))
+        .append(this._divWithJustClass('expandCollapse')
           .append(this._image('images1 expandAll', 'images/add.jpg', ''))
           .append(this._image('images1 collapseAll', 'images/collapse.jpg', ''))
         )
@@ -72,9 +58,7 @@ class Todo {
       .append(
         this._buttons()
       )
-      .append($('<div />', { 'class': 'marginDiv'})
-        .append(this._$employeeRoleDropDown)
-      );
+      .append(this._divWithJustClass('marginDiv')).append(this._$employeeRoleDropDown);
   }
 
   _addEventListenerToBody() {
@@ -118,43 +102,41 @@ class Todo {
     const employee = prompt("Enter Employee Name");
     const date = new Date();
     const id = date.getTime();
-    const $employeeDiv = $('<div />', {
-      'class': 'employeesEmployee',
-      'id': `${id}`,
-      'html': employee,
-    });
-
+    const $employeeDiv = this._div('employeesEmployee', employee, id);
     if (employee) {
       this._$employees
-        .append($employeeDiv.append(this._image('hidden sameRow delete employeeDelete', 'images/delete.jpg', ''))
-        .hover(() => {
-          $employeeDiv.find('img.employeeDelete').toggleClass('hidden');
-        }));
+        .append(this._newEmployee($employeeDiv));
     }
+  }
+
+  _newEmployee(employeeDiv) {
+    return employeeDiv.append(this._image('hidden sameRow delete employeeDelete', 'images/delete.jpg', ''))
+      .hover(() => {
+        employeeDiv.find('img.employeeDelete').toggleClass('hidden');
+      })
   }
 
   _addRole() {
     const role = prompt("Enter Role Name");
     const date = new Date();
     const id = date.getTime();
-    const $roleDiv = $('<div />', {
-      'class': 'rolesRole',
-      'id': `${id}`,
-      'html': `<b>${role}</b>`,
-    });
-
+    const $roleDiv = this._div('rolesRole', `<b>${role}</b>`, id);
     if (role) {
       this._$roles
         .append(
-          $roleDiv
-            .prepend(this._image('hidden sameRow delete roleDelete', 'images/delete.jpg', ''))
-            .append(this._image('sameRow roleAdd', 'images/add.jpg', 'Add Employee to this Role'))
-            .append(this._divWithId(id))
-            .hover(() => {
-              $roleDiv.find('img.roleDelete').toggleClass('hidden');
-            })
+          this._newRole($roleDiv, id)
         );
     }
+  }
+
+  _newRole(roleDiv, id) {
+    return roleDiv
+      .prepend(this._image('hidden sameRow delete roleDelete', 'images/delete.jpg', ''))
+      .append(this._image('sameRow roleAdd', 'images/add.jpg', 'Add Employee to this Role'))
+      .append(this._divWithJustClass(id))
+      .hover(() => {
+        roleDiv.find('img.roleDelete').toggleClass('hidden');
+      });
   }
 
   _image(className, source, title) {
@@ -162,13 +144,44 @@ class Todo {
       'src': source,
       'class': className,
       'title': title,
-    })  
+    }) ; 
   }
 
-  _divWithId(id) {
+  _div(className, html, id) {
+    return $('<div />', {
+      'class': className,
+      'id': id,
+      'html': html,
+    });
+  }
+
+  _divWithJustClass(id) {
     return $('<div />', {
       'class': `${id}`,
-    })
+    });
+  }
+
+  _createNewElement(tag, className, html) {
+    return $(`<${tag} />`, {
+      'class': className,
+      'html': html,
+    });
+  }
+
+  _input(className, placeholder, type, value) {
+    return $('<input />', {
+      'type': 'text',
+      'placeholder': 'Update todo here...',
+      'class': 'toDoInput',
+      'value': value,
+    });
+  }
+
+  _option(html, value) {
+    return $('<option />', {
+      'value': value,
+      'html': html,
+    });
   }
 
   _expandAll(target) {
@@ -239,17 +252,10 @@ class Todo {
 
   _addNewEmployeeToRole(target) {
     const employees = $('div.employees div.employeesEmployee');
-    this._$employeeRoleDropDown.html($('<option />', {
-      'value': '',
-      'html': 'Select Employee',
-    }));
-
+    this._$employeeRoleDropDown.html(this._option('Select Employee', ''));
     if (employees.length) {
       employees.each((index, employee) => {
-        this._$employeeRoleDropDown.append($('<option />', {
-          'value': $(employee).attr('id'),
-          'html': $(employee).text(),
-        }));
+        this._$employeeRoleDropDown.append(this._option($(employee).text(), $(employee).attr('id')));
       });
 
       this._$employeeRoleDropDown.removeClass('hidden').addClass('revealed');
@@ -263,26 +269,22 @@ class Todo {
     this._$employeeRoleDropDown.one('change', () => {
       const employee = this._$employeeRoleDropDown.children('option').filter(':selected').text();
       const employeeClass = this._$employeeRoleDropDown.val();
-      const $employeeDiv = $('<div />', {
-        'class': 'employeesEmployee',
-        'html': employee,
-        'class': `${className} ${employeeClass}`,
-      });
+      const $employeeDiv = this._createNewElement('div', `${className} ${employeeClass}`, employee);
 
-      target.next('div')
-        .append($employeeDiv.append(
-          $('<img />', {
-            'src': 'images/delete.jpg',
-            'class': 'hidden sameRow roleEmployeeDelete delete',
-          })
-        )
-        .hover(() => {
-          $employeeDiv.find('img.roleEmployeeDelete').toggleClass('hidden');
-        }));
-
+      this._appendImagesAndSetToggling(target, $employeeDiv);
       this._initializeToDo(className, role, employeeClass, employee);
       this._$employeeRoleDropDown.removeClass('revealed').addClass('hidden');
     });
+  }
+
+  _appendImagesAndSetToggling(target, employeeDiv) {
+    target.next('div')
+      .append(employeeDiv.append(
+        this._image('hidden sameRow roleEmployeeDelete delete', 'images/delete.jpg', '')
+      )
+      .hover(() => {
+        employeeDiv.find('img.roleEmployeeDelete').toggleClass('hidden');
+      }));
   }
 
   _initializeToDo(roleClass, role, employeeClass, employee) {
@@ -295,60 +297,29 @@ class Todo {
 
   _appendNewRole(roleClass, role, employeeClass, employee) {
     this._$right.append(
-      $('<div />', {'class': `employeeToDoSection ${roleClass}`, })
-        .append($('<div />', {
-          'class': 'roleHeader',
-          'html': role,
-        }).append($('<img />', {
-            'src': 'images/collapse.jpg',
-            'class': 'sameRow expandCollapse collapse',
-          })))
-        .append($('<div />', {
-          'class': `employeeDetails ${roleClass} ${employeeClass}`,
-        }).append($('<div />', {
-            'class': 'employee',
-            'html': employee,
-          }))
-          .append($('<div />', {
-            'class': 'employeeTodo',
-            'html': `<span>Add todos for ${employee} here</span>`,
-          }).append($('<img />', {
-              'src': 'images/add.jpg',
-              'class': 'sameRow add',
-            })))
-        )
+      this._createNewElement('div', `employeeToDoSection ${roleClass}`, '')
+        .append(this._createNewElement('div', 'roleHeader', role).append(this._image('sameRow expandCollapse collapse', 'images/collapse.jpg', '')))
+        .append(
+          this._createNewElement('div', `employeeDetails ${roleClass} ${employeeClass}`, '')
+            .append(this._createNewElement('div', 'employee', employee))
+            .append(this._createNewElement('div', 'employeeTodo', `<span>Add todos for ${employee} here</span>`).append(this._image('sameRow add', 'images/add.jpg', '')))
+          )
       );
   }
 
   _appendToexistingRole(roleClass, role, employeeClass, employee) {
     $(`div.employeeToDoSection.${roleClass}`)
-      .append($('<div />', {
-        'class': `employeeDetails ${roleClass} ${employeeClass}`,
-      }).append($('<div />', {
-          'class': 'employee',
-          'html': employee,
-        }))
-        .append($('<div />', {
-          'class': 'employeeTodo',
-          'html': `<span>Add todos for ${employee} here</span>`,
-        }).append($('<img />', {
-            'src': 'images/add.jpg',
-            'class': 'sameRow add',
-          })))
+      .append(this._createNewElement('div', `employeeDetails ${roleClass} ${employeeClass}`, '')
+        .append(this._createNewElement('div', 'employee', employee))
+        .append(this._createNewElement('div', 'employeeTodo', `<span>Add todos for ${employee} here</span>`)
+          .append(this._image('sameRow add', 'images/add.jpg', ''))
+        )
       );
   }
 
   _addToDo(target, value) {
-    const $saveImage = $('<img />', {
-      'src': 'images/save.jpg',
-      'class': 'sameRow save',
-    });
-
-    const $deleteImage = $('<img />', {
-      'src': 'images/delete.jpg',
-      'class': 'sameRow cancel',
-    });
-
+    const $saveImage = this._image('sameRow save', 'images/save.jpg', '');
+    const $deleteImage = this._image('sameRow cancel', 'images/delete.jpg', '');
     this._addAccordingToContext(target, value, $saveImage, $deleteImage);
   }
 
@@ -356,30 +327,20 @@ class Todo {
     if (!target.siblings('div.toDoInputDiv').length) {
       target.closest('div.employeeTodo').find('span').removeClass('revealed').addClass('hidden');
       if (value) {
-        $('<div />', {'class': 'toDoInputDiv',})
-          .append($('<input />', {
-            'type': 'text',
-            'placeholder': 'Update todo here...',
-            'class': 'toDoInput',
-            'value': value,
-          }))
-          .append(saveImage)
-          .append(deleteImage)
-          .insertAfter(target.closest('div.toDoDataDiv'));
-
+        this._inputEditSaveDeleteItem('Update todo here...', value, saveImage, deleteImage)
+        .insertAfter(target.closest('div.toDoDataDiv'));
         target.closest('div.toDoDataDiv').remove();
       } else {
-        target.closest('div').append($('<div />', {'class': 'toDoInputDiv',})
-          .append($('<input />', {
-            'type': 'text',
-            'placeholder': 'Add a new todo here...',
-            'class': 'toDoInput',
-          }))
-          .append(saveImage)
-          .append(deleteImage)
-        );
+        target.closest('div').append(this._inputEditSaveDeleteItem('Add a new todo here...', value, saveImage, deleteImage));
       }
     }
+  }
+
+  _inputEditSaveDeleteItem(placeholder, value, saveImage, deleteImage) {
+    return this._createNewElement('div', 'toDoInputDiv', '')
+      .append(this._input('toDoInput', placeholder, 'text', value))
+      .append(saveImage)
+      .append(deleteImage)
   }
 
   _cancelToDo(target) {
@@ -392,17 +353,10 @@ class Todo {
   _saveToDo(target) {
     const input = target.closest('div.employeeTodo').find('input.toDoInput').val();
     if (input) {
-      $('<div />', {
-        'class': 'toDoDataDiv',
-        'html': `<b>${input}</b>`,
-      }).append($('<img />', {
-          'src': 'images/edit.jpg',
-          'class': 'sameRow edit',
-        }))
-        .append($('<img />', {
-          'src': 'images/delete.jpg',
-          'class': 'sameRow delete',
-        }))
+      this._createNewElement('div', 'toDoDataDiv', '')
+        .append(this._createNewElement('b', '', input))
+        .append(this._image('sameRow edit', 'images/edit.jpg', ''))
+        .append(this._image('sameRow delete', 'images/delete.jpg', ''))
         .insertAfter(target.closest('div.toDoInputDiv'));
       target.closest('div.toDoInputDiv').remove();
     } else {
