@@ -1,0 +1,202 @@
+div {
+	clear: both;
+}
+
+.hidden {
+	display: none;
+}
+
+.revealed {
+	display: block;
+}
+
+.heading {
+	font-weight: bold;
+	text-align: center;
+}
+
+.borderedBelow {
+	border-bottom: 1px solid #bababa;
+}
+
+div.content {
+	width: 750px;
+	height: 400px;
+	padding: 5px;
+	clear: both;
+	margin: auto;
+}
+
+div.left {
+	float: left;
+	width: 40%;
+	clear: none;
+	margin-right: 20px;
+}
+
+div.roles {
+	float: left;
+	clear: none;
+	margin-right: 3%;
+	border: 1px solid #bababa;
+	width: 45%;
+}
+
+div.rolesRole {
+	float: left;
+	clear: none;
+	border-bottom: 1px solid #bababa;
+	width: 95%;
+}
+
+div.rolesEmployee {
+	float: left;
+	clear: both;
+	border-bottom: 1px solid #bababa;
+	width: 95%;
+}
+
+div.employees {
+	float: left;
+	clear: none;
+	border: 1px solid #bababa;
+	box-sizing: border-box;
+	width: 45%;
+}
+
+div.employeesEmployee {
+	float: left;
+	clear: both;
+	border-bottom: 1px solid #bababa;
+	width: 95%;
+}
+
+div.right {
+	float: left;
+	width: 55%;
+	clear: none;
+}
+
+div.todoSection {
+	float: left;
+	clear: both;
+	width: 90%;
+}
+
+div.todoHeading {
+	float: left;
+	clear: none;
+	text-align: center;
+	width: 100%;
+}
+
+div.employeeToDoSection {
+	float: left;
+	clear: both;
+	border: 1px solid #bababa;
+	box-sizing: border-box;
+	width: 100%;
+}
+
+div.roleContainer {
+	float: left;
+	clear: both;
+	text-align: center;
+}
+
+div.roleHeader {
+	float: left;
+	clear: both;
+	text-align: center;
+	width: 100%;
+	border: 1px solid #bababa;
+	box-sizing: border-box;
+	font-weight: bold;
+}
+
+div.employeeDetails {
+	float: left;
+	clear: both;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+div.employee {
+	float: left;
+	clear: none;
+	margin-right: 10px;
+	width: 20%;
+	border: 1px solid #bababa;
+	box-sizing: border-box;
+}
+
+div.employeeTodo {
+	float: right;
+	clear: none;
+	height: 70px;
+	overflow: auto;
+	width: 75%;
+	border: 1px solid #bababa;
+	text-align: center;
+	vertical-align: middle;
+	box-sizing: border-box;
+}
+
+div.todo {
+	float: left;
+	clear: none;
+	width: 60%;
+	height: 20px;
+	margin-bottom: 5px;
+	margin-right: 20px;
+	border: 1px solid #bababa;
+}
+
+div.editOrSave {
+	float: left;
+	clear: none;
+	margin-right: 5px;
+}
+
+div.images1 {
+	float: left;
+	clear: none;
+	margin-right: 10px;
+}
+
+div.expandCollapse, .add {
+	float: right;
+	clear: none;
+	margin-left: 5px;
+}
+
+.sameRow {
+	clear: none;
+}
+
+.employeeDelete {
+	float: right;
+}
+
+.roleDelete {
+	float: left;
+}
+
+.highlighted {
+	background: #bebeff;
+}
+
+.dataRow {
+	cursor: pointer;
+}
+
+.deletePicHolder {
+	cursor: pointer;
+}
+
+.button {
+	margin-top: 30px;
+	margin-right: 10px;
+}
+
+
