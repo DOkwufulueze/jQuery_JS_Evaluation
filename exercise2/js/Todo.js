@@ -20,46 +20,54 @@ class Todo {
     this._addEventListenerToBody();
   }
 
+  _left() {
+    return this._$left
+      .append(
+        this._$roles.append($('<div />', {
+          'class': 'heading borderedBelow',
+          'html': 'ROLES',
+        }))
+      )
+      .append(
+        this._$employees.append($('<div />', {
+          'class': 'heading borderedBelow',
+          'html': 'Employees',
+        })
+        )
+      );
+  }
+
+  _right() {
+    return this._$right.append(
+      $('<div />', { 'class': 'todoSection', })
+        .append($('<div />', {
+          'class': 'todoHeading heading', 
+          'html': 'ToDos',
+        }))
+        .append($('<div />', { 'class': 'expandCollapse', })
+          .append($('<img />', {
+           'class': 'images1 expandAll',
+           'id': 'expand',
+           'src': 'images/add.jpg',
+          }))
+          .append($('<img />', {
+           'class': 'images1 collapseAll',
+           'id': 'collapse',
+           'src': 'images/collapse.jpg',
+          })
+        )
+      )
+    );
+  }
+
   _setupPage() {
     this._$body
       .append($('<div />')
         .append(
-          this._$left
-          .append(
-            this._$roles.append($('<div />', {
-              'class': 'heading borderedBelow',
-              'html': 'ROLES',
-            }))
-          )
-          .append(
-            this._$employees.append($('<div />', {
-              'class': 'heading borderedBelow',
-              'html': 'Employees',
-            })
-            )
-          )
+          this._left()
         )
         .append(
-          this._$right.append(
-            $('<div />', { 'class': 'todoSection', })
-              .append($('<div />', {
-                'class': 'todoHeading heading', 
-                'html': 'ToDos',
-              }))
-              .append($('<div />', { 'class': 'expandCollapse', })
-                .append($('<img />', {
-                 'class': 'images1 expandAll',
-                 'id': 'expand',
-                 'src': 'images/add.jpg',
-                }))
-                .append($('<img />', {
-                 'class': 'images1 collapseAll',
-                 'id': 'collapse',
-                 'src': 'images/collapse.jpg',
-                })
-              )
-            )
-          )
+          this._right()
         )
       )
       .append($('<div />')
@@ -209,21 +217,27 @@ class Todo {
   }
 
   _deleteRole(target) {
-    const className = target.parent('div').attr('id');
-    $(`.${className}`).remove();
-    $(`div#${className}`).remove();
+    if (confirm(':::Are you sure you want to delete role?')) {
+      const className = target.parent('div').attr('id');
+      $(`.${className}`).remove();
+      $(`div#${className}`).remove();
+    }
   }
 
   _deleteEmployee(target) {
-    const className = target.closest('div').attr('id');
-    $(`.${className}`).remove();
-    $(`div#${className}`).remove();
+    if (confirm(':::Are you sure you want to delete employee?')) {
+      const className = target.closest('div').attr('id');
+      $(`.${className}`).remove();
+      $(`div#${className}`).remove();
+    }
   }
 
   _deleteRoleEmployee(target) {
-    const className = target.closest('div').parent('div').parent('div').attr('id');
-    const employee = target.closest('div').attr('class').split(/\s+/)[1];
-    $(`.${className}.${employee}`).remove();
+    if (confirm(':::Are you sure you want to delete employee from role?')) {
+      const className = target.closest('div').parent('div').parent('div').attr('id');
+      const employee = target.closest('div').attr('class').split(/\s+/)[1];
+      $(`.${className}.${employee}`).remove();
+    }
   }
 
   _addNewEmployeeToRole(target) {
@@ -404,10 +418,12 @@ class Todo {
   }
 
   _deleteToDo(target) {
-    if (!(target.closest('div.employeeTodo').find('div.toDoDataDiv').length > 1)) {
-      target.closest('div.employeeTodo').find('span').removeClass('hidden').addClass('revealed');
+    if (confirm(':::Are you sure you want to delete this todo item?')) {
+      if (!(target.closest('div.employeeTodo').find('div.toDoDataDiv').length > 1)) {
+        target.closest('div.employeeTodo').find('span').removeClass('hidden').addClass('revealed');
+      }
+      target.closest('div.toDoDataDiv').remove();
     }
-    target.closest('div.toDoDataDiv').remove();
   }
 }
 
