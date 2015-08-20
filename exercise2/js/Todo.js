@@ -45,19 +45,18 @@ class Todo {
           'html': 'ToDos',
         }))
         .append($('<div />', { 'class': 'expandCollapse', })
-          .append($('<img />', {
-           'class': 'images1 expandAll',
-           'id': 'expand',
-           'src': 'images/add.jpg',
-          }))
-          .append($('<img />', {
-           'class': 'images1 collapseAll',
-           'id': 'collapse',
-           'src': 'images/collapse.jpg',
-          })
+          .append(this._image('images1 expandAll', 'images/add.jpg', ''))
+          .append(this._image('images1 collapseAll', 'images/collapse.jpg', ''))
         )
-      )
-    );
+      );
+  }
+
+
+
+  _buttons() {
+    return $('<div />')
+      .append(this._$addRole)
+      .append(this._$addEmployee)
   }
 
   _setupPage() {
@@ -70,11 +69,10 @@ class Todo {
           this._right()
         )
       )
-      .append($('<div />')
-        .append(this._$addRole)
-        .append(this._$addEmployee)
+      .append(
+        this._buttons()
       )
-      .append($('<div />')
+      .append($('<div />', { 'class': 'marginDiv'})
         .append(this._$employeeRoleDropDown)
       );
   }
@@ -128,11 +126,7 @@ class Todo {
 
     if (employee) {
       this._$employees
-        .append($employeeDiv.append($('<img />', {
-            'src': 'images/delete.jpg',
-            'class': 'hidden sameRow employeeDelete delete',
-          })
-        )
+        .append($employeeDiv.append(this._image('hidden sameRow delete employeeDelete', 'images/delete.jpg', ''))
         .hover(() => {
           $employeeDiv.find('img.employeeDelete').toggleClass('hidden');
         }));
@@ -152,26 +146,29 @@ class Todo {
     if (role) {
       this._$roles
         .append(
-          $roleDiv.prepend($('<img />', {
-              'src': 'images/delete.jpg',
-              'class': 'hidden sameRow roleDelete delete',
+          $roleDiv
+            .prepend(this._image('hidden sameRow delete roleDelete', 'images/delete.jpg', ''))
+            .append(this._image('sameRow roleAdd', 'images/add.jpg', 'Add Employee to this Role'))
+            .append(this._divWithId(id))
+            .hover(() => {
+              $roleDiv.find('img.roleDelete').toggleClass('hidden');
             })
-          )
-          .append($('<img />', {
-              'src': 'images/add.jpg',
-              'class': 'sameRow roleAdd add',
-              'title': 'Add Employee to this Role',
-            })
-          )
-          .append($('<div />', {
-              'class': `${id}`,
-            })
-          )
-          .hover(() => {
-            $roleDiv.find('img.roleDelete').toggleClass('hidden');
-          })
         );
     }
+  }
+
+  _image(className, source, title) {
+    return $('<img />', {
+      'src': source,
+      'class': className,
+      'title': title,
+    })  
+  }
+
+  _divWithId(id) {
+    return $('<div />', {
+      'class': `${id}`,
+    })
   }
 
   _expandAll(target) {
@@ -273,7 +270,8 @@ class Todo {
       });
 
       target.next('div')
-        .append($employeeDiv.append($('<img />', {
+        .append($employeeDiv.append(
+          $('<img />', {
             'src': 'images/delete.jpg',
             'class': 'hidden sameRow roleEmployeeDelete delete',
           })
