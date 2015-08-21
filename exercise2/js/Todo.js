@@ -180,14 +180,7 @@ class Todo {
       .siblings('div')
       .slideDown(1000);
 
-    target.closest('div.todoSection')
-      .siblings('div')
-      .find('.roleHeader')
-      .find('.expand')
-      .removeClass('expand')
-      .addClass('collapse')
-      .attr('src', 'images/collapse.jpg')
-      .data({'methodName': '_collapse', 'parameters': 'target',});
+    this._toggleHeadExpandCollapse(target, 'collapse', 'expand', 'collapse');
   }
 
   _collapseAll(target) {
@@ -198,14 +191,7 @@ class Todo {
       .siblings('div')
       .slideUp(1000);
 
-    target.closest('div.todoSection')
-      .siblings('div')
-      .find('.roleHeader')
-      .find('.collapse')
-      .removeClass('collapse')
-      .addClass('expand')
-      .attr('src', 'images/add.jpg')
-      .data({'methodName': '_expand', 'parameters': 'target',});
+      this._toggleHeadExpandCollapse(target, 'expand', 'collapse', 'add');
   }
 
   _expand(target) {
@@ -214,11 +200,7 @@ class Todo {
       .siblings('div')
       .slideDown(1000);
 
-    target
-      .removeClass('expand')
-      .addClass('collapse')
-      .attr('src', 'images/collapse.jpg')
-      .data({'methodName': '_collapse', 'parameters': 'target',});
+    this._toggleRoleExpandCollapse(target, 'collapse', 'expand', 'collapse');
   }
 
   _collapse(target) {
@@ -227,11 +209,26 @@ class Todo {
       .siblings('div')
       .slideUp(1000);
 
+    this._toggleRoleExpandCollapse(target, 'expand', 'collapse', 'add');
+  }
+
+  _toggleHeadExpandCollapse(target, toAdd, toRemove, imageName) {
+    target.closest('div.todoSection')
+      .siblings('div')
+      .find('.roleHeader')
+      .find(`.${toRemove}`)
+      .removeClass(toRemove)
+      .addClass(toAdd)
+      .attr('src', `images/${imageName}.jpg`)
+      .data({'methodName': `_${toAdd}`, 'parameters': 'target',});
+  }
+
+  _toggleRoleExpandCollapse(target, toAdd, toRemove, imageName) {
     target
-      .removeClass('collapse')
-      .addClass('expand')
-      .attr('src', 'images/add.jpg')
-      .data({'methodName': '_expand', 'parameters': 'target',});
+      .removeClass(toRemove)
+      .addClass(toAdd)
+      .attr('src', `images/${imageName}.jpg`)
+      .data({'methodName': `_${toAdd}`, 'parameters': 'target',});
   }
 
   _deleteRole(target) {
@@ -349,8 +346,7 @@ class Todo {
     if (!target.siblings('div.toDoInputDiv').length) {
       target.closest('div.employeeTodo').find('span').removeClass('revealed').addClass('hidden');
       if (value) {
-        this._inputEditSaveDeleteItem('Update todo here...', value, saveImage, deleteImage)
-        .insertAfter(target.closest('div.toDoDataDiv'));
+        this._inputEditSaveDeleteItem('Update todo here...', value, saveImage, deleteImage).insertAfter(target.closest('div.toDoDataDiv'));
         target.closest('div.toDoDataDiv').remove();
       } else {
         target.closest('div.employeeTodo').append(this._inputEditSaveDeleteItem('Add a new todo here...', value, saveImage, deleteImage));
