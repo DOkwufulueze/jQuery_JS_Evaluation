@@ -397,6 +397,10 @@ class Todo {
   _saveToDo(target) {
     const target = $(target);
     const input = target.closest('div.employeeTodo').find('input.toDoInput').val();
+    this._saveIfInputElseStop(input, target);
+  }
+
+  _saveIfInputElseStop(input, target) {
     if (input) {
       this._createNewElement('div', 'toDoDataDiv', '')
         .append(this._createNewElement('b', '', input))
