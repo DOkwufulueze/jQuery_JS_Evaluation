@@ -432,7 +432,7 @@ class Todo {
   }
 
   _locateEmployees() {
-    const affectedDivs = $(`div.right div:not(:has('div')):contains(${this._$searchField.val()})`);
+    const affectedDivs = $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`);
     this._blinkText(affectedDivs);
   }
 
@@ -481,6 +481,14 @@ class Todo {
 }
 
 $(() => {
+
+  //Extending jQuery to do case-insensitive search for contains
+  $.expr[":"].Contains = $.expr.createPseudo((parameters) => {
+    return (element) => {
+        return $(element).text().toUpperCase().indexOf(parameters.toUpperCase()) >= 0;
+    };
+  });
+
   const body = $('body');
   const left = $('<div />', {'class': 'left'});
   const right = $('<div />', {'class': 'right'});
