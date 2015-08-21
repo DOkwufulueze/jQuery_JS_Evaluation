@@ -188,9 +188,9 @@ class Todo {
     }
   }
 
-  _returnImage(className, source, title) {
+  _returnImage(className, sourceAttribute, title) {
     return $('<img />', {
-      'src': source,
+      'src': sourceAttribute,
       'class': className,
       'title': title,
     }) ; 
