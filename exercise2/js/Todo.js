@@ -3,7 +3,7 @@
 class Todo {
 
   //Todo constructor
-  constructor(body, left, right, roles, employees, addRole, addEmployee, employeeRoleDropDown) {
+  constructor(body, left, right, roles, employees, addRole, addEmployee, employeeRoleDropDown, searchField, searchButton) {
     this._$body = body;
     this._$left = left;
     this._$right = right;
@@ -12,6 +12,8 @@ class Todo {
     this._$addRole = addRole;
     this._$addEmployee = addEmployee;
     this._$employeeRoleDropDown = employeeRoleDropDown;
+    this._$searchButton = searchButton;
+    this._$searchField = searchField;
     this._init();
   }
 
@@ -37,27 +39,33 @@ class Todo {
       );
   }
 
+  _searchArea() {
+    return $('<div />', {'class': 'section'})
+      .append(this._$searchField)
+      .append(this._$searchButton);
+  }
 
+  _midSection() {
+    return $('<div />', {'class': 'section'})
+      .append(
+        this._leftSection()
+      )
+      .append(
+        this._rightSection()
+      );
+  }
 
   _buttons() {
-    return $('<div />')
+    return $('<div />', {'class': 'section'})
       .append(this._$addRole)
-      .append(this._$addEmployee)
+      .append(this._$addEmployee);
   }
 
   _setupPage() {
     this._$body
-      .append($('<div />')
-        .append(
-          this._leftSection()
-        )
-        .append(
-          this._rightSection()
-        )
-      )
-      .append(
-        this._buttons()
-      )
+      .append(this._searchArea())
+      .append(this._midSection())
+      .append(this._buttons())
       .append(this._createNewElement('div', 'marginDiv', '')).append(this._$employeeRoleDropDown);
   }
 
@@ -75,6 +83,8 @@ class Todo {
       if (typeof methodName === 'function') {
         parameters ? methodName.apply(this, parameters) : methodName.apply(this);
       }
+
+      $('div.marked').removeClass('marked');
     });
   }
 
@@ -187,7 +197,7 @@ class Todo {
     const target = $(target);
     target.closest('div.todoSection')
       .siblings('div')
-      .find('.roleHeader')
+      .find('.roleHeader:not(.marked)')
       .siblings('div')
       .slideUp(1000);
 
@@ -215,7 +225,7 @@ class Todo {
   _toggleHeadExpandCollapse(target, toAdd, toRemove, imageName) {
     target.closest('div.todoSection')
       .siblings('div')
-      .find('.roleHeader')
+      .find('.roleHeader:not(.marked)')
       .find(`.${toRemove}`)
       .removeClass(toRemove)
       .addClass(toAdd)
@@ -392,6 +402,51 @@ class Todo {
       target.closest('div.toDoDataDiv').remove();
     }
   }
+
+  _search() {
+    this._$searchField.val() ? this._locateEmployees() : alert(":::Search field is empty.");
+  }
+
+  _locateEmployees() {
+    const affectedDivs = $(`div.right div:not(:has('div')):contains(${this._$searchField.val()})`);
+    this._blinkText(affectedDivs);
+  }
+
+  _blinkText(containers) {
+    $('div.marked').removeClass('marked');
+    containers.each((index, container) => {
+      let $innerTarget = $(container).closest('div.employeeDetails').siblings('div.roleHeader').find('img.expandCollapse');
+      this._expand($innerTarget);
+      $(container).fadeTo(100, 0, () => {$(container).addClass('highlighted');});
+      this._repeat($(container), 4);
+      $(container)
+        .delay(100)
+        .fadeTo(500, 1, () => {$(container).removeClass('highlighted');}); 
+      $(container).closest('div.employeeDetails').siblings('div.roleHeader').addClass('marked');
+    });
+
+    this._slideUpOthers(containers);
+  }
+
+  _slideUpOthers(containers) {    
+    if (containers.length) {
+      const $target = $('.right .todoSection .collapseAll');
+      this._collapseAll($target);
+    }
+  }
+
+  _repeat(container, times) {
+    const i = 0;
+    while (i < times) {
+      container
+        .delay(100)
+        .fadeTo(100, 1)
+        .delay(100)
+        .fadeTo(100, 0);
+        
+      i++;
+    }
+  }
 }
 
 $(() => {
@@ -416,7 +471,22 @@ $(() => {
   });
 
   addEmployee.data({'methodName': '_addEmployee'});  
+  const searchField = $('<input />', {
+    'type': 'text',
+    'id': 'searchField',
+    'placeholder': 'Search Employee',
+    'class': 'sameRow',
+  });
+
+  const searchButton = $('<input />', {
+    'type': 'button',
+    'id': 'search',
+    'value': 'Search',
+    'class': 'sameRow',
+  });
+
+  searchButton.data({'methodName': '_search'}); 
   const employeeRoleDropDown = $('<select />', { 'class': 'hidden', });
-  new Todo(body, left, right, roles, employees, addRole, addEmployee, employeeRoleDropDown);
+  new Todo(body, left, right, roles, employees, addRole, addEmployee, employeeRoleDropDown, searchField, searchButton);
 }); 
 

@@ -2,6 +2,12 @@ div {
 	clear: both;
 }
 
+.section {
+	clear: both;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
 .hidden {
 	display: none;
 }
@@ -183,7 +189,9 @@ div.expandCollapse, .add {
 }
 
 .highlighted {
-	background: #bebeff;
+	background: #7a7aff;
+	color: #baba11;
+	font-weight: bold;
 }
 
 .dataRow {
