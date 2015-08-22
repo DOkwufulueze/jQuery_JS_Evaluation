@@ -242,7 +242,6 @@ class Todo {
       .find('.roleHeader')
       .siblings('div')
       .slideDown(1000);
-
     this._toggleHeadExpandCollapse(target, 'collapse', 'expand', 'collapse');
   }
 
@@ -253,7 +252,6 @@ class Todo {
       .find('.roleHeader:not(.marked)')
       .siblings('div')
       .slideUp(1000);
-
       this._toggleHeadExpandCollapse(target, 'expand', 'collapse', 'add');
   }
 
@@ -262,7 +260,6 @@ class Todo {
     target.closest('div.roleHeader')
       .siblings('div')
       .slideDown(1000);
-
     this._toggleRoleExpandCollapse(target, 'collapse', 'expand', 'collapse');
   }
 
@@ -271,7 +268,6 @@ class Todo {
     target.closest('div.roleHeader')
       .siblings('div')
       .slideUp(1000);
-
     this._toggleRoleExpandCollapse(target, 'expand', 'collapse', 'add');
   }
 
@@ -440,14 +436,24 @@ class Todo {
   }
 
   _search() {
-    this._$searchField.val() ? this._locateEmployees() : alert(":::Search field is empty.");
+    this._$searchField.val() ? this._generateCases() : alert(":::Search field is empty.");
   }
 
-  _locateEmployees() {
-    const affectedDivs = $(`div.right div.employee:not(:has('div')):Contains(${this._$searchField.val()})`).length ? $(`div.right div.employee:not(:has('div')):Contains(${this._$searchField.val()})`) : false
-      || $(`div.right div.toDoDataDiv:not(:has('div')):Contains(${this._$searchField.val()})`).closest('div.employeeTodo').siblings('div.employee').length ? $(`div.right div.toDoDataDiv:not(:has('div')):Contains(${this._$searchField.val()})`).closest('div.employeeTodo').siblings('div.employee') : false
-      || $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`).siblings('div').find('.employee').length ? $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`).siblings('div').find('.employee') : false;
-    
+  _generateCases() {
+    const firstCase = $(`div.right div.employee:not(:has('div')):Contains(${this._$searchField.val()})`);
+    const secondCase = $(`div.right div.toDoDataDiv:not(:has('div')):Contains(${this._$searchField.val()})`)
+      .closest('div.employeeTodo')
+      .siblings('div.employee');
+    const thirdCase = $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`)
+      .siblings('div')
+      .find('.employee');
+    this._locateEmployees(firstCase, secondCase, thirdCase);
+  }
+
+  _locateEmployees(firstCase, secondCase, thirdCase) {
+    const affectedDivs = firstCase.length ? firstCase : false
+      || secondCase.length ? secondCase : false
+      || thirdCase.length ? thirdCase : false;    
     this._checkCriteriaSatisfaction(affectedDivs);
   }
 
@@ -492,8 +498,7 @@ class Todo {
         .delay(100)
         .fadeTo(100, 1)
         .delay(100)
-        .fadeTo(100, 0);
-        
+        .fadeTo(100, 0);        
       i++;
     }
   }
