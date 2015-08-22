@@ -445,7 +445,7 @@ class Todo {
 
   _locateEmployees() {
     const affectedDivs = $(`div.right div.employee:not(:has('div')):Contains(${this._$searchField.val()})`).length ? $(`div.right div.employee:not(:has('div')):Contains(${this._$searchField.val()})`) : false
-      || $(`div.right div.toDoDataDiv:not(:has('div')):Contains(${this._$searchField.val()})`).closest('div.employeeTodo').siblings('div.employee').length ? $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`).siblings('div.employee') : false
+      || $(`div.right div.toDoDataDiv:not(:has('div')):Contains(${this._$searchField.val()})`).closest('div.employeeTodo').siblings('div.employee').length ? $(`div.right div.toDoDataDiv:not(:has('div')):Contains(${this._$searchField.val()})`).closest('div.employeeTodo').siblings('div.employee') : false
       || $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`).siblings('div').find('.employee').length ? $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`).siblings('div').find('.employee') : false;
     
     this._checkCriteriaSatisfaction(affectedDivs);
