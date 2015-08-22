@@ -143,29 +143,37 @@ class Todo {
   _returnNewRole(roleDiv, id) {
     return roleDiv
       .prepend(this._returnImage('hidden sameRow roleDelete', 'images/delete.jpg', '').data({'methodName': '_deleteRole', 'parameters': 'target',}))
-      .append(this._returnImage('sameRow roleAdd', 'images/add.jpg', 'Add Employee to this Role').data({'methodName': '_addNewEmployeeToRole', 'parameters': 'target',}))
+      .append(this._returnImage('sameRow roleAdd', 'images/add.jpg', 'Add Employee to this Role').data({'methodName': '_prepareEmployeeRoleDropDown', 'parameters': 'target',}))
       .append(this._createNewElement('div', id, ''))
       .hover(() => {
         roleDiv.find('img.roleDelete').toggleClass('hidden');
       });
   }
 
-  _addNewEmployeeToRole(target) {
+  _prepareEmployeeRoleDropDown(target) {
     const target = $(target);
     const employees = $('div.employees div.employeesEmployee');
     this._$employeeRoleDropDown.html(this._returnOption('Select Employee', ''));
-    this._addEmployeeToRoleIfNotEmpty(employees, target);
+    this._populateEmployeeRoleDropDownWithEmployees(employees, target);
   }
 
-  _addEmployeeToRoleIfNotEmpty(employees, target) {
+  _populateEmployeeRoleDropDownWithEmployees(employees, target) {
     if (employees.length) {
       employees.each((index, employee) => {
         this._$employeeRoleDropDown.append(this._returnOption($(employee).text(), $(employee).attr('id')));
       });
 
-      this._$employeeRoleDropDown.removeClass('hidden').addClass('revealed');
-      this._target = target;
+      this._revealEmployeeRoleDropDown();
+      this._updateTarget(target);
     }
+  }
+
+  _revealEmployeeRoleDropDown() {
+    this._$employeeRoleDropDown.removeClass('hidden').addClass('revealed');
+  }
+
+  _updateTarget(target) {
+    this._target = target;
   }
 
   _updateOnChange() {
@@ -184,7 +192,7 @@ class Todo {
       this._$employeeRoleDropDown.removeClass('revealed').addClass('hidden');
     } else {
       alert(':::Employee/Role combination already exists.');
-      this._addNewEmployeeToRole(target);
+      this._prepareEmployeeRoleDropDown(target);
     }
   }
 
@@ -436,8 +444,15 @@ class Todo {
   }
 
   _locateEmployees() {
-    const affectedDivs = $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`);
-    this._blinkText(affectedDivs);
+    const affectedDivs = $(`div.right div.employee:not(:has('div')):Contains(${this._$searchField.val()})`).length ? $(`div.right div.employee:not(:has('div')):Contains(${this._$searchField.val()})`) : false
+      || $(`div.right div.toDoDataDiv:not(:has('div')):Contains(${this._$searchField.val()})`).closest('div.employeeTodo').siblings('div.employee').length ? $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`).siblings('div.employee') : false
+      || $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`).siblings('div').find('.employee').length ? $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`).siblings('div').find('.employee') : false;
+    
+    this._checkCriteriaSatisfaction(affectedDivs);
+  }
+
+  _checkCriteriaSatisfaction(containers) {
+    containers ? this._blinkText(containers) : alert(':::No employee meets your search criteria.');
   }
 
   _blinkText(containers) {
