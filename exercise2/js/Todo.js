@@ -341,7 +341,7 @@ class Todo {
 
   _initializeToDo(roleClass, role, employeeClass, employee) {
     if ($(`div.employeeToDoSection.${roleClass}`).length) {
-      this._appendToexistingRole(roleClass, role, employeeClass, employee);
+      this._appendToExistingRole(roleClass, role, employeeClass, employee);
     } else {
       this._appendNewRole(roleClass, role, employeeClass, employee);
     }
@@ -359,7 +359,7 @@ class Todo {
       );
   }
 
-  _appendToexistingRole(roleClass, role, employeeClass, employee) {
+  _appendToExistingRole(roleClass, role, employeeClass, employee) {
     $(`div.employeeToDoSection.${roleClass}`)
       .append(this._createNewElement('div', `employeeDetails ${roleClass} ${employeeClass}`, '')
         .append(this._createNewElement('div', 'employee', employee))
