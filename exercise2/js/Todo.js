@@ -221,9 +221,9 @@ class Todo {
 
   _returnInput(className, placeholder, type, value) {
     return $('<input />', {
-      'type': 'text',
-      'placeholder': 'Update todo here...',
-      'class': 'toDoInput',
+      'type': type,
+      'placeholder': placeholder,
+      'class': className,
       'value': value,
     });
   }
@@ -233,6 +233,13 @@ class Todo {
       'value': value,
       'html': html,
     });
+  }
+
+  _returnInputEditSaveDeleteItem(placeholder, value, saveImage, deleteImage) {
+    return this._createNewElement('div', 'toDoInputDiv', '')
+      .append(this._returnInput('toDoInput', placeholder, 'text', value))
+      .append(saveImage)
+      .append(deleteImage)
   }
 
   _expandAll(target) {
@@ -362,13 +369,6 @@ class Todo {
       );
   }
 
-  _returnInputEditSaveDeleteItem(placeholder, value, saveImage, deleteImage) {
-    return this._createNewElement('div', 'toDoInputDiv', '')
-      .append(this._returnInput('toDoInput', placeholder, 'text', value))
-      .append(saveImage)
-      .append(deleteImage)
-  }
-
   _addToDo(target, value) {
     const target = $(target);
     const $saveImage = this._returnImage('sameRow save', 'images/save.jpg', '').data({'methodName': '_saveToDo', 'parameters': 'target',});
@@ -380,12 +380,17 @@ class Todo {
     const target = $(target);
     if (!target.siblings('div.toDoInputDiv').length) {
       target.closest('div.employeeTodo').find('span').removeClass('revealed').addClass('hidden');
-      if (value) {
-        this._returnInputEditSaveDeleteItem('Update todo here...', value, saveImage, deleteImage).insertAfter(target.closest('div.toDoDataDiv'));
-        target.closest('div.toDoDataDiv').remove();
-      } else {
-        target.closest('div.employeeTodo').append(this._returnInputEditSaveDeleteItem('Add a new todo here...', value, saveImage, deleteImage));
-      }
+      this._addEditOrNew(target, value, saveImage, deleteImage);
+      $('.toDoInput').focus();
+    }
+  }
+
+  _addEditOrNew(target, value, saveImage, deleteImage) {
+    if (value) {
+      this._returnInputEditSaveDeleteItem('Update todo here...', value, saveImage, deleteImage).insertAfter(target.closest('div.toDoDataDiv'));
+      target.closest('div.toDoDataDiv').remove();
+    } else {
+      target.closest('div.employeeTodo').append(this._returnInputEditSaveDeleteItem('Add a new todo here...', value, saveImage, deleteImage));
     }
   }
 
@@ -440,11 +445,11 @@ class Todo {
   }
 
   _generateCases() {
-    const firstCase = $(`div.right div.employee:not(:has('div')):Contains(${this._$searchField.val()})`);
-    const secondCase = $(`div.right div.toDoDataDiv:not(:has('div')):Contains(${this._$searchField.val()})`)
+    const firstCase = $(`div.right div.employee:not(:has('div')):caseInsensitiveSearch(${this._$searchField.val()})`);
+    const secondCase = $(`div.right div.toDoDataDiv:not(:has('div')):caseInsensitiveSearch(${this._$searchField.val()})`)
       .closest('div.employeeTodo')
       .siblings('div.employee');
-    const thirdCase = $(`div.right div:not(:has('div')):Contains(${this._$searchField.val()})`)
+    const thirdCase = $(`div.right div:not(:has('div')):caseInsensitiveSearch(${this._$searchField.val()})`)
       .siblings('div')
       .find('.employee');
     this._locateEmployees(firstCase, secondCase, thirdCase);
@@ -507,7 +512,7 @@ class Todo {
 $(() => {
 
   //Extending jQuery to do case-insensitive search for contains
-  $.expr[":"].Contains = $.expr.createPseudo((parameters) => {
+  $.expr[":"].caseInsensitiveSearch = $.expr.createPseudo((parameters) => {
     return (element) => {
         return $(element).text().toUpperCase().indexOf(parameters.toUpperCase()) >= 0;
     };

@@ -25,14 +25,6 @@ div {
 	border-bottom: 1px solid #bababa;
 }
 
-div.content {
-	width: 750px;
-	height: 400px;
-	padding: 5px;
-	clear: both;
-	margin: auto;
-}
-
 div.left {
 	float: left;
 	width: 40%;
@@ -139,7 +131,7 @@ div.employee {
 div.employeeTodo {
 	float: right;
 	clear: none;
-	height: 70px;
+	height: 95px;
 	overflow: auto;
 	width: 75%;
 	border: 1px solid #bababa;
@@ -156,6 +148,12 @@ div.todo {
 	margin-bottom: 5px;
 	margin-right: 20px;
 	border: 1px solid #bababa;
+}
+
+div.toDoDatadiv {
+	width: 95%;
+	height: 20px;
+	border-bottom: 1px solid #bababa;
 }
 
 div.editOrSave {
