@@ -129,7 +129,7 @@ class ToDo {
       .find('.roleHeader')
       .siblings('div')
       .slideDown(1000);
-    this._toggleHeadExpandCollapse(target, 'collapse', 'expand', 'collapse');
+    this._toggleListVisibility(target, 'collapse', 'expand', 'collapse');
   }
 
   _collapseAll(target) {
@@ -139,7 +139,7 @@ class ToDo {
       .find('.roleHeader:not(.marked)')
       .siblings('div')
       .slideUp(1000);
-      this._toggleHeadExpandCollapse(target, 'expand', 'collapse', 'add');
+      this._toggleListVisibility(target, 'expand', 'collapse', 'add');
   }
 
   _expand(target) {
@@ -147,7 +147,7 @@ class ToDo {
     target.closest('div.roleHeader')
       .siblings('div')
       .slideDown(1000);
-    this._toggleRoleExpandCollapse(target, 'collapse', 'expand', 'collapse');
+    this._toggleRoleVisibility(target, 'collapse', 'expand', 'collapse');
   }
 
   _collapse(target) {
@@ -155,10 +155,10 @@ class ToDo {
     target.closest('div.roleHeader')
       .siblings('div')
       .slideUp(1000);
-    this._toggleRoleExpandCollapse(target, 'expand', 'collapse', 'add');
+    this._toggleRoleVisibility(target, 'expand', 'collapse', 'add');
   }
 
-  _toggleHeadExpandCollapse(target, toAdd, toRemove, imageName) {
+  _toggleListVisibility(target, toAdd, toRemove, imageName) {
     target.closest('div.todoSection')
       .siblings('div')
       .find('.roleHeader:not(.marked)')
@@ -169,7 +169,7 @@ class ToDo {
       .data({'methodName': `_${toAdd}`, 'parameters': 'target',});
   }
 
-  _toggleRoleExpandCollapse(target, toAdd, toRemove, imageName) {
+  _toggleRoleVisibility(target, toAdd, toRemove, imageName) {
     target
       .removeClass(toRemove)
       .addClass(toAdd)
