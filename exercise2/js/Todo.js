@@ -120,7 +120,7 @@ class Todo {
   }
 
   _newEmployee(employeeDiv) {
-    return employeeDiv.append(this._returnImage('hidden sameRow employeeDelete', 'images/delete.jpg', '').data({'methodName': '_deleteEmployee', 'parameters': 'target',}))
+    return employeeDiv.append(this._returnImage('hidden sameRow employeeDelete', 'images/delete.jpg', '').data({'methodName': '_deleteData', 'parameters': 'target, Employee',}))
       .hover(() => {
         employeeDiv.find('img.employeeDelete').toggleClass('hidden');
       })
@@ -142,7 +142,7 @@ class Todo {
 
   _returnNewRole(roleDiv, id) {
     return roleDiv
-      .prepend(this._returnImage('hidden sameRow roleDelete', 'images/delete.jpg', '').data({'methodName': '_deleteRole', 'parameters': 'target',}))
+      .prepend(this._returnImage('hidden sameRow roleDelete', 'images/delete.jpg', '').data({'methodName': '_deleteData', 'parameters': 'target, Role',}))
       .append(this._returnImage('sameRow roleAdd', 'images/add.jpg', 'Add Employee to this Role').data({'methodName': '_prepareEmployeeRoleDropDown', 'parameters': 'target',}))
       .append(this._createNewElement('div', id, ''))
       .hover(() => {
@@ -297,19 +297,9 @@ class Todo {
       .data({'methodName': `_${toAdd}`, 'parameters': 'target',});
   }
 
-  _deleteRole(target) {
+  _deleteData(target, data) {
     const target = $(target);
-    if (confirm(':::Are you sure you want to delete role?')) {
-      const className = target.parent('div').attr('id');
-      $(`.${className}`).remove();
-      $(`div#${className}`).remove();
-      this._$employeeRoleDropDown.removeClass('revealed').addClass('hidden');
-    }
-  }
-
-  _deleteEmployee(target) {
-    const target = $(target);
-    if (confirm(':::Are you sure you want to delete employee?')) {
+    if (confirm(`:::Are you sure you want to delete ${data}?`)) {
       const className = target.closest('div').attr('id');
       $(`.${className}`).remove();
       $(`div#${className}`).remove();
