@@ -54,7 +54,7 @@ class ToDo {
   }
 
   _returnMidSection() {
-    return $('<div />', {'class': 'section'})
+    return this._DOMElement._createNewElement('div', 'section', '', '')
       .append(
         this._returnLeftSection()
       )
@@ -64,7 +64,7 @@ class ToDo {
   }
 
   _returnButtons() {
-    return $('<div />', {'class': 'section'})
+    return this._DOMElement._createNewElement('div', 'section', '', '')
       .append(this._$addRole)
       .append(this._$addEmployee);
   }
@@ -348,7 +348,7 @@ class Employee {
   }
 
   _returnEmployeesContainer() {
-    const $employees = $('<div />', {'class': 'employees'});
+    const $employees = this._DOMElement._createNewElement('div', 'employees', '', '');
     $employees.append(this._DOMElement._createNewElement('div', 'heading borderedBelow', 'Employees', ''));
     return $employees;
   }
@@ -386,7 +386,7 @@ class Role {
   }
 
   _returnRolesContainer() {
-    const $roles = $('<div />', {'class': 'roles'});
+    const $roles = this._DOMElement._createNewElement('div', 'roles', '', '');
     $roles.append(this._DOMElement._createNewElement('div', 'heading borderedBelow', 'ROLES', ''));
     return $roles;
   }
@@ -446,7 +446,7 @@ class EmployeeRoleDropDown {
   }
 
   _returnEmployeeRoleDropDown() {
-    const $employeeRoleDropDown = $('<select />', { 'class': 'hidden', });
+    const $employeeRoleDropDown = this._DOMElement._createNewElement('select', 'hidden', '', '');
     return $employeeRoleDropDown;
   }
 
@@ -511,19 +511,10 @@ class EmployeeRoleDropDown {
 class SearchManager {
   constructor(callerContext) {
     this._callerContext = callerContext;
-    this._$searchField = $('<input />', {
-      'type': 'text',
-      'id': 'searchField',
-      'placeholder': 'Search Employee',
-      'class': 'sameRow',
-    });
+    this._DOMElement = new DOMElement();
+    this._$searchField = this._DOMElement._returnInput('sameRow', 'Search Employee', 'text', '').attr('id', 'searchField');
 
-    this._$searchButton = $('<input />', {
-      'type': 'button',
-      'id': 'search',
-      'value': 'Search',
-      'class': 'sameRow',
-    });
+    this._$searchButton = this._DOMElement._returnInput('sameRow', '', 'button', 'Search').attr('id', 'search');
 
     this._$searchButton.data({
       'className': this, 
@@ -532,7 +523,7 @@ class SearchManager {
   }
 
   _returnSearchArea() {
-    return $('<div />', {'class': 'section'})
+    return this._DOMElement._createNewElement('div', 'section', '', '')
       .append(this._$searchField)
       .append(this._$searchButton);
   }
