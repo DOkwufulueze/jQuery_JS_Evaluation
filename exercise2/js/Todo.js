@@ -3,34 +3,30 @@
 class ToDo {
 
   //ToDo constructor
-  constructor(body, left, right, roles, employees, addRole, addEmployee, employeeRoleDropDown, searchField, searchButton) {
+  constructor(body, left, right, addRole, addEmployee) {
     this._$body = body;
     this._$left = left;
     this._$right = right;
-    this._$roles = roles;
+    this._Role = new Role(this);
+    this._$roles = this._Role._returnRolesContainer();
+    this._Employee = new Employee(this);
+    this._$employees = this._Employee._returnEmployeesContainer();
     addRole.data({
-      'className': new Role(this), 
+      'className': this._Role, 
       'methodName': '_addRole',
     });
 
     this._$addRole = addRole;
     addEmployee.data({
-      'className': new Employee(this), 
+      'className': this._Employee, 
       'methodName': '_addEmployee',
     });
 
     this._$addEmployee = addEmployee;
-    this._$employeeRoleDropDown = employeeRoleDropDown;
     this._EmployeeRoleDropDown = new EmployeeRoleDropDown(this);
-    searchButton.data({
-      'className': new SearchManager(this), 
-      'methodName': '_search'
-    });
-
-    this._$searchButton = searchButton;
-    this._$searchField = searchField;
+    this._$employeeRoleDropDown = this._EmployeeRoleDropDown._returnEmployeeRoleDropDown();
+    this._SearchManager = new SearchManager(this);
     this._DOMElement = new DOMElement();
-    this._$employees = employees;
     this._init();
   }
 
@@ -41,25 +37,20 @@ class ToDo {
 
   _returnLeftSection() {
     return this._$left
-      .append(this._$roles.append(this._DOMElement._createNewElement('div', 'heading borderedBelow', 'ROLES')))
-      .append(this._$employees.append(this._DOMElement._createNewElement('div', 'heading borderedBelow', 'Employees')));
+      .append(this._$roles)
+      .append(this._$employees);
   }
 
   _returnRightSection() {
     return this._$right.append(
-      this._DOMElement._createNewElement('div', 'todoSection', '')
-        .append(this._DOMElement._createNewElement('div', 'todoHeading heading', 'ToDos'))
-        .append(this._DOMElement._createNewElement('div', 'expandCollapse', '')
+      this._DOMElement._createNewElement('div', 'todoSection', '', '')
+        .append(this._DOMElement._createNewElement('div', 'todoHeading heading', 'ToDos', ''))
+        .append(this._DOMElement._createNewElement('div', 'expandCollapse', '', '')
           .append(this._DOMElement._returnImage('images1 expandAll', 'images/add.jpg', '').data({'methodName': '_expandAll', 'parameters': 'target',}))
           .append(this._DOMElement._returnImage('images1 collapseAll', 'images/collapse.jpg', '').data({'methodName': '_collapseAll', 'parameters': 'target',}))
         )
-      );
-  }
-
-  _returnSearchArea() {
-    return $('<div />', {'class': 'section'})
-      .append(this._$searchField)
-      .append(this._$searchButton);
+      )
+    .addClass('hidden');
   }
 
   _returnMidSection() {
@@ -81,10 +72,10 @@ class ToDo {
   _setPageUp() {
     this._EmployeeRoleDropDown._addEventListener();
     this._$body
-      .append(this._returnSearchArea())
+      .append(this._SearchManager._returnSearchArea())
       .append(this._returnMidSection())
       .append(this._returnButtons())
-      .append(this._DOMElement._createNewElement('div', 'marginDiv', '')).append(this._$employeeRoleDropDown);
+      .append(this._DOMElement._createNewElement('div', 'marginDiv', '', '')).append(this._$employeeRoleDropDown);
   }
 
   _addEventListenerToBody() {
@@ -116,7 +107,7 @@ class ToDo {
   }
 
   _returnInputEditSaveDeleteItem(placeholder, value, saveImage, deleteImage) {
-    return this._DOMElement._createNewElement('div', 'toDoInputDiv', '')
+    return this._DOMElement._createNewElement('div', 'toDoInputDiv', '', '')
       .append(this._DOMElement._returnInput('toDoInput', placeholder, 'text', value))
       .append(saveImage)
       .append(deleteImage)
@@ -187,21 +178,23 @@ class ToDo {
 
   _appendNewRole(roleClass, role, employeeClass, employee) {
     this._$right.append(
-      this._DOMElement._createNewElement('div', `employeeToDoSection ${roleClass}`, '')
-        .append(this._DOMElement._createNewElement('div', 'roleHeader', role).append(this._DOMElement._returnImage('sameRow expandCollapse collapse', 'images/collapse.jpg', '').data({'methodName': '_collapse', 'parameters': 'target, ""',})))
+      this._DOMElement._createNewElement('div', `employeeToDoSection ${roleClass}`, '', '')
+        .append(this._DOMElement._createNewElement('div', 'roleHeader', role, '').append(this._DOMElement._returnImage('sameRow expandCollapse collapse', 'images/collapse.jpg', '').data({'methodName': '_collapse', 'parameters': 'target, ""',})))
         .append(
-          this._DOMElement._createNewElement('div', `employeeDetails ${roleClass} ${employeeClass}`, '')
-            .append(this._DOMElement._createNewElement('div', 'employee', employee))
-            .append(this._DOMElement._createNewElement('div', 'employeeTodo', `<span>Add todos for ${employee} here</span>`).append(this._DOMElement._returnImage('sameRow add', 'images/add.jpg', '').data({'methodName': '_addToDo', 'parameters': 'target,',})))
+          this._DOMElement._createNewElement('div', `employeeDetails ${roleClass} ${employeeClass}`, '', '')
+            .append(this._DOMElement._createNewElement('div', 'employee', employee, ''))
+            .append(this._DOMElement._createNewElement('div', 'employeeTodo', `<span>Add todos for ${employee} here</span>`, '').append(this._DOMElement._returnImage('sameRow add', 'images/add.jpg', '').data({'methodName': '_addToDo', 'parameters': 'target,',})))
           )
-      );
+      )
+    .removeClass('hidden')
+    .addClass('revealed');
   }
 
   _appendToExistingRole(roleClass, role, employeeClass, employee) {
     $(`div.employeeToDoSection.${roleClass}`)
-      .append(this._DOMElement._createNewElement('div', `employeeDetails ${roleClass} ${employeeClass}`, '')
-        .append(this._DOMElement._createNewElement('div', 'employee', employee))
-        .append(this._DOMElement._createNewElement('div', 'employeeTodo', `<span>Add todos for ${employee} here</span>`)
+      .append(this._DOMElement._createNewElement('div', `employeeDetails ${roleClass} ${employeeClass}`, '', '')
+        .append(this._DOMElement._createNewElement('div', 'employee', employee, ''))
+        .append(this._DOMElement._createNewElement('div', 'employeeTodo', `<span>Add todos for ${employee} here</span>`, '')
           .append(this._DOMElement._returnImage('sameRow add', 'images/add.jpg', '').data({'methodName': '_addToDo', 'parameters': 'target,',}))
         )
       );
@@ -238,19 +231,23 @@ class ToDo {
       target.closest('div.employeeTodo').find('span').removeClass('hidden').addClass('revealed');
     }
 
+    const toFocus = target.closest('div.employeeTodo');
     target.closest('div.toDoInputDiv').remove();
+    toFocus.get(0).scrollTop = 0;
   }
 
   _saveToDo(target) {
     const target = $(target);
+    const toFocus = target.closest('div.employeeTodo');
     const input = target.closest('div.employeeTodo').find('input.toDoInput').val();
     this._saveIfInputElseStop(input, target);
+    toFocus.get(0).scrollTop = 0;
   }
 
   _saveIfInputElseStop(input, target) {
     if (input) {
-      this._DOMElement._createNewElement('div', 'toDoDataDiv', '')
-        .append(this._DOMElement._createNewElement('b', '', input))
+      this._DOMElement._createNewElement('div', 'toDoDataDiv', '', '')
+        .append(this._DOMElement._createNewElement('b', '', input, ''))
         .append(this._DOMElement._returnImage('sameRow edit', 'images/edit.jpg', '').data({'methodName': '_editToDo', 'parameters': 'target',}))
         .append(this._DOMElement._returnImage('sameRow delete', 'images/delete.jpg', '').data({'methodName': '_deleteToDo', 'parameters': 'target',}))
         .insertAfter(target.closest('div.toDoInputDiv'));
@@ -263,6 +260,7 @@ class ToDo {
 
   _editToDo(target) {
     const target = $(target);
+    const toFocus = target.closest('div.employeeTodo');
     const input = target.closest('div.toDoDataDiv').find('b').text();
     this._addToDo(target, input);
   }
@@ -274,24 +272,14 @@ class ToDo {
         target.closest('div.employeeTodo').find('span').removeClass('hidden').addClass('revealed');
       }
 
+      const toFocus = target.closest('div.employeeTodo');
       target.closest('div.toDoDataDiv').remove();
+      toFocus.get(0).scrollTop = 0;
     }
   }
 }
 
 class DOMElement {
-  constructor() {
-
-  }
-
-  _returnDiv(className, html, id) {
-    return $('<div />', {
-      'class': className,
-      'id': id,
-      'html': html,
-    });
-  }
-
   _returnImage(className, sourceAttribute, title) {
     return $('<img />', {
       'src': sourceAttribute,
@@ -300,10 +288,11 @@ class DOMElement {
     }) ; 
   }
 
-  _createNewElement(tag, className, html) {
+  _createNewElement(tag, className, html, id) {
     return $(`<${tag} />`, {
       'class': className,
       'html': html,
+      'id': id ? id : null,
     });
   }
 
@@ -336,6 +325,7 @@ class DataDeleteManager {
       $(`.${className}`).remove();
       $(`div#${className}`).remove();
       this._callerContext._$employeeRoleDropDown.removeClass('revealed').addClass('hidden');
+      $('div.employeeToDoSection').length > 0 ? $('div.right').removeClass('hidden').addClass('revealed') : $('div.right').removeClass('revealed').addClass('hidden')
     }
   }
 
@@ -357,11 +347,17 @@ class Employee {
     this._DOMElement = new DOMElement();
   }
 
+  _returnEmployeesContainer() {
+    const $employees = $('<div />', {'class': 'employees'});
+    $employees.append(this._DOMElement._createNewElement('div', 'heading borderedBelow', 'Employees', ''));
+    return $employees;
+  }
+
   _addEmployee() {
     const employee = prompt("Enter Employee Name");
     const date = new Date();
     const id = date.getTime();
-    const $employeeDiv = this._DOMElement._returnDiv('employeesEmployee', employee, id);
+    const $employeeDiv = this._DOMElement._createNewElement('div', 'employeesEmployee', employee, id);
     this._confirmEmployeeBeforeAdding(employee, $employeeDiv);
   }
 
@@ -389,11 +385,17 @@ class Role {
     this._DOMElement = new DOMElement();
   }
 
+  _returnRolesContainer() {
+    const $roles = $('<div />', {'class': 'roles'});
+    $roles.append(this._DOMElement._createNewElement('div', 'heading borderedBelow', 'ROLES', ''));
+    return $roles;
+  }
+
   _addRole() {
     const role = prompt("Enter Role Name");
     const date = new Date();
     const id = date.getTime();
-    const $roleDiv = this._DOMElement._returnDiv('rolesRole', `<b>${role}</b>`, id);
+    const $roleDiv = this._DOMElement._createNewElement('div', 'rolesRole', `<b>${role}</b>`, id);
     this._confirmRoleBeforeAdding(role, $roleDiv, id);
   }
 
@@ -415,7 +417,7 @@ class Role {
         'methodName': '_prepareEmployeeRoleDropDown',
         'parameters': 'target',
       }))
-      .append(this._DOMElement._createNewElement('div', id, ''))
+      .append(this._DOMElement._createNewElement('div', id, '', ''))
       .hover(() => {
         roleDiv.find('img.roleDelete').toggleClass('hidden');
       });
@@ -441,6 +443,11 @@ class EmployeeRoleDropDown {
     this._callerContext = callerContext;
     this._DOMElement = new DOMElement();
     this._Role = new Role(this._callerContext);
+  }
+
+  _returnEmployeeRoleDropDown() {
+    const $employeeRoleDropDown = $('<select />', { 'class': 'hidden', });
+    return $employeeRoleDropDown;
   }
 
   _addEventListener() {
@@ -490,7 +497,7 @@ class EmployeeRoleDropDown {
   _checkForExistenceAndContinue(target, className, role, employeeClass, employee) {
     const target = $(target);
     if (!target.siblings('div').find(`div.${employeeClass}`).length) {
-      const $employeeDiv = this._DOMElement._createNewElement('div', `${className} ${employeeClass}`, employee);
+      const $employeeDiv = this._DOMElement._createNewElement('div', `${className} ${employeeClass}`, employee, '');
       this._Role._appendRoleImagesAndSetToggling(target, $employeeDiv);
       this._callerContext._initializeToDo(className, role, employeeClass, employee);
       this._callerContext._$employeeRoleDropDown.removeClass('revealed').addClass('hidden');
@@ -504,18 +511,42 @@ class EmployeeRoleDropDown {
 class SearchManager {
   constructor(callerContext) {
     this._callerContext = callerContext;
+    this._$searchField = $('<input />', {
+      'type': 'text',
+      'id': 'searchField',
+      'placeholder': 'Search Employee',
+      'class': 'sameRow',
+    });
+
+    this._$searchButton = $('<input />', {
+      'type': 'button',
+      'id': 'search',
+      'value': 'Search',
+      'class': 'sameRow',
+    });
+
+    this._$searchButton.data({
+      'className': this, 
+      'methodName': '_search'
+    });
+  }
+
+  _returnSearchArea() {
+    return $('<div />', {'class': 'section'})
+      .append(this._$searchField)
+      .append(this._$searchButton);
   }
 
   _search() {
-    this._callerContext._$searchField.val() ? this._generateCases() : alert(":::Search field is empty.");
+    this._$searchField.val() ? this._generateCases() : alert(":::Search field is empty.");
   }
 
   _generateCases() {
-    const firstCase = $(`div.right div.employee:not(:has('div')):caseInsensitiveSearch(${this._callerContext._$searchField.val()})`);
-    const secondCase = $(`div.right div.toDoDataDiv:not(:has('div')):caseInsensitiveSearch(${this._callerContext._$searchField.val()})`)
+    const firstCase = $(`div.right div.employee:not(:has('div')):caseInsensitiveSearch(${this._$searchField.val()})`);
+    const secondCase = $(`div.right div.toDoDataDiv:not(:has('div')):caseInsensitiveSearch(${this._$searchField.val()})`)
       .closest('div.employeeTodo')
       .siblings('div.employee');
-    const thirdCase = $(`div.right div:not(:has('div')):caseInsensitiveSearch(${this._callerContext._$searchField.val()})`)
+    const thirdCase = $(`div.right div:not(:has('div')):caseInsensitiveSearch(${this._$searchField.val()})`)
       .siblings('div')
       .find('.employee');
     this._locateEmployees(firstCase, secondCase, thirdCase);
@@ -587,8 +618,6 @@ $(() => {
   const body = $('body');
   const left = $('<div />', {'class': 'left'});
   const right = $('<div />', {'class': 'right'});
-  const employees = $('<div />', {'class': 'employees'});
-  const roles = $('<div />', {'class': 'roles'});
   const addRole = $('<input />', {
     'type': 'button',
     'id': 'addRole',
@@ -603,21 +632,6 @@ $(() => {
     'class': 'button',
   });
 
-  const searchField = $('<input />', {
-    'type': 'text',
-    'id': 'searchField',
-    'placeholder': 'Search Employee',
-    'class': 'sameRow',
-  });
-
-  const searchButton = $('<input />', {
-    'type': 'button',
-    'id': 'search',
-    'value': 'Search',
-    'class': 'sameRow',
-  });
-
-  const employeeRoleDropDown = $('<select />', { 'class': 'hidden', });
-  new ToDo(body, left, right, roles, employees, addRole, addEmployee, employeeRoleDropDown, searchField, searchButton);
+  new ToDo(body, left, right, addRole, addEmployee);
 }); 
 
